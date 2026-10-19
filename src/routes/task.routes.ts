@@ -4,17 +4,18 @@ import { z } from 'zod';
 const router = Router();
 
 
-let tasks: Task[] = [
+const initialTasks: Task[] = [
   { id: 1, title: 'Learn Express routing', completed: true },
   { id: 2, title: 'Build a REST API', completed: false },
 ];
+
+let tasks: Task[] = initialTasks.map(task => ({ ...task }));
 let nextTaskId = 3;
 
 export function resetTaskStore(): void {
   tasks = initialTasks.map(task => ({ ...task }));
   nextTaskId = 3;
 }
-
 
 // Read all tasks
 // http://localhost:3000/tasks
