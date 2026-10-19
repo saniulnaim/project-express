@@ -18,6 +18,22 @@ app.use(routes);
 
 const port = 3000;
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+
+app.use((
+  err: Error,
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  console.error(err.stack);
+
+  if (res.headersSent) {
+    return next(err);
+  }
+
+  res.status(500).json({
+    message: 'Internal server error',
+  });
 });
+
+export default app;
