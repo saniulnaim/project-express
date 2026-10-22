@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import request from 'supertest';
 
 import app from '../app';
-import { resetTaskStore } from '../routes/task.routes';
+import { resetTaskStore } from '../services/task.service';
 
 beforeEach(() => {
   resetTaskStore();
