@@ -14,6 +14,14 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json()); // JSON request body parse করে, যদি থাকে
 
+app.get('/health', (_req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    framework: 'Express.js',
+    message: 'Backend is running',
+  });
+});
+
 app.use(routes);
 
 const port = 3000;
