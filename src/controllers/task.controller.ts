@@ -47,7 +47,7 @@ export function getTask(
   req: Request,
   res: Response,
 ): void {
-  const id = parseTaskId(req.params.id.toString());
+  const id = parseTaskId(String(req.params.id));
 
   if (id === undefined) {
     res.status(400).json({ message: 'Invalid task ID' });
@@ -85,7 +85,7 @@ export function patchTask(
   req: Request,
   res: Response,
 ): void {
-  const id = parseTaskId(req.params.id.toString());
+  const id = parseTaskId(String(req.params.id));
 
   if (id === undefined) {
     res.status(400).json({ message: 'Invalid task ID' });
@@ -116,7 +116,7 @@ export function removeTask(
   req: Request,
   res: Response,
 ): void {
-  const id = parseTaskId(req.params.id.toString());
+  const id = parseTaskId(String(req.params.id));
 
   if (id === undefined) {
     res.status(400).json({ message: 'Invalid task ID' });
