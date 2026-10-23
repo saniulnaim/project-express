@@ -24,9 +24,6 @@ app.get('/health', (_req, res) => {
 
 app.use(routes);
 
-const port = 3000;
-
-
 app.use((
   err: Error,
   req: express.Request,
