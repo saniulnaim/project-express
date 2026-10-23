@@ -9,7 +9,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "oxlint",
-    "lint:fix": "oxlint --fix"
+    "lint:fix": "oxlint --fix",
+    "build": "rspack build"
   },
   "keywords": [],
   "author": "",
@@ -26,6 +27,8 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@rspack/cli": "^2.2.9",
+    "@rspack/core": "^2.2.9",
     "@types/better-sqlite3": "^9.6.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
