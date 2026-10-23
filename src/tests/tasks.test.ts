@@ -1,12 +1,22 @@
+import {
+  afterAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+} from 'vitest';
 
-import { beforeEach, describe, expect, it } from 'vitest';
 import request from 'supertest';
-
 import app from '../app';
+import prisma from '../lib/prisma';
 import { resetTaskStore } from '../services/task.service';
 
-beforeEach(() => {
-  resetTaskStore();
+beforeEach(async () => {
+  await resetTaskStore();
+});
+
+afterAll(async () => {
+  await prisma.$disconnect();
 });
 
 describe('Task API', () => {

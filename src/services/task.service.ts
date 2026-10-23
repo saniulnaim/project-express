@@ -1,10 +1,11 @@
-import type { Task } from '../models/task.model';
+
+import prisma from '../lib/prisma';
 import type {
   CreateTaskInput,
   UpdateTaskInput,
 } from '../validations/task.validation';
 
-const initialTasks: Task[] = [
+const initialTasks = [
   {
     id: 1,
     title: 'Learn Express routing',
@@ -17,72 +18,78 @@ const initialTasks: Task[] = [
   },
 ];
 
-let tasks: Task[] = initialTasks.map((task) => ({
-  ...task,
-}));
-
-let nextTaskId = 3;
-
-export function resetTaskStore(): void {
-  tasks = initialTasks.map((task) => ({ ...task }));
-  nextTaskId = 3;
+export async function resetTaskStore(): Promise<void> {
+  await prisma.$transaction([
+    prisma.task.deleteMany(),
+    prisma.task.createMany({
+      data: initialTasks,
+    }),
+  ]);
 }
 
-export function getAllTasks(
-  completed?: boolean,
-): Task[] {
-  if (completed === undefined) {
-    return tasks;
-  }
-
-  return tasks.filter(
-    (task) => task.completed === completed,
-  );
+export async function getAllTasks(completed?: boolean) {
+  return prisma.task.findMany({
+    where:
+      completed === undefined
+        ? {}
+        : { completed },
+    orderBy: {
+      id: 'asc',
+    },
+  });
 }
 
-export function getTaskById(id: number): Task | undefined {
-  return tasks.find((task) => task.id === id);
+export async function getTaskById(id: number) {
+  return prisma.task.findUnique({
+    where: { id },
+  });
 }
 
-export function createTask(input: CreateTaskInput): Task {
-  const task: Task = {
-    id: nextTaskId++,
-    title: input.title,
-    completed: false,
-  };
-
-  tasks.push(task);
-  return task;
+export async function createTask(input: CreateTaskInput) {
+  return prisma.task.create({
+    data: {
+      title: input.title,
+      completed: false,
+    },
+  });
 }
 
-export function updateTask(
+
+export async function updateTask(
   id: number,
   input: UpdateTaskInput,
-): Task | undefined {
-  const task = getTaskById(id);
+) {
+  const existingTask = await prisma.task.findUnique({
+    where: { id },
+  });
 
-  if (!task) {
-    return undefined;
+  if (!existingTask) {
+    return null;
   }
 
+  const data: {
+    title?: string;
+    completed?: boolean;
+  } = {};
+
   if (input.title !== undefined) {
-    task.title = input.title;
+    data.title = input.title;
   }
 
   if (input.completed !== undefined) {
-    task.completed = input.completed;
+    data.completed = input.completed;
   }
 
-  return task;
+  return prisma.task.update({
+    where: { id },
+    data,
+  });
 }
 
-export function deleteTask(id: number): boolean {
-  const index = tasks.findIndex((task) => task.id === id);
+export async function deleteTask(id: number): Promise<boolean> {
+  const result = await prisma.task.deleteMany({
+    where: { id },
+  });
 
-  if (index === -1) {
-    return false;
-  }
-
-  tasks.splice(index, 1);
-  return true;
+  return result.count > 0;
 }
