@@ -58,3 +58,7 @@ desktop.ini
 *.pem
 
 /generated/prisma
+
+# SQLite test database
+test.db
+test.db-journal

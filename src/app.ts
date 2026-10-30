@@ -4,6 +4,7 @@ import helmet from 'helmet'; // set security headers to protect the app from wel
 import cors from 'cors'; // communication between different origins (fe and be)
 
 import routes from './routes/index.js';
+import { errorHandler } from './middlewares/error-handler.js';
 
 // app is the main entry point ot the application
 const app = express(); // to create an instance of the express application
@@ -24,21 +25,10 @@ app.get('/health', (_req, res) => {
 
 app.use(routes);
 
-app.use((
-  err: Error,
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction,
-) => {
-  console.error(err.stack);
-
-  if (res.headersSent) {
-    return next(err);
-  }
-
-  res.status(500).json({
-    message: 'Internal server error',
-  });
+app.use((_req, res) => {
+  res.status(404).json({ message: 'Route not found' });
 });
+
+app.use(errorHandler);
 
 export default app;
